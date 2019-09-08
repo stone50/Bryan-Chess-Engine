@@ -16,6 +16,8 @@ public class Position {
 		     // this variable. Defaults to true
     String bestMove; // what Bryan considers to be the best move
     double bestEval; // position evaluation after analysis
+    String nextFEN; // FEN of the position after making the best move
+    String[] continuation; // list of moves to continue the game
 
     Position() {
 	layout = new char[8][8];
@@ -87,8 +89,9 @@ public class Position {
 	    out += "b";
 	}
 
-	// adds the en passant move, fifty move rule counter and overall move counter
-	out += " " + ep + " " + fiftyMoveRule + " " + moveCount;
+	// adds the castle moves, en passant move, fifty move rule counter and overall
+	// move counter
+	out += " " + castle + " " + ep + " " + fiftyMoveRule + " " + moveCount;
 	FEN = out;
 	return out;
     }
@@ -1555,22 +1558,22 @@ public class Position {
 		    out -= 1;
 		    break;
 		case 'R':
-		    out += 5 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out += 5;
 		    break;
 		case 'r':
-		    out -= 5 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out -= 5;
 		    break;
 		case 'N':
-		    out += 3 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out += 3;
 		    break;
 		case 'n':
-		    out -= 3 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out -= 3;
 		    break;
 		case 'B':
-		    out += 3.1 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out += 3.1;
 		    break;
 		case 'b':
-		    out -= 3.1 + (5 - Math.sqrt(((row - 3.5) * (row - 3.5)) + ((col - 3.5) * (col - 3.5)))) / 100;
+		    out -= 3.1;
 		    break;
 		case 'Q':
 		    out += 9;
@@ -1586,7 +1589,7 @@ public class Position {
 	return out;
     }
 
-    double think(double depthThreshold, int depth, boolean printProgress) {
+    double think(double depthThreshold, int depth, boolean play, boolean printProgress) {
 	if (SE == 0) {
 	    SE();
 	}
@@ -1605,11 +1608,11 @@ public class Position {
 		    return 0;
 		}
 	    }
-	    Position nextPos;
-	    String castleTemp = castle;
-	    String epTemp = ep;
-	    int fiftyTemp = fiftyMoveRule;
 	    for (int i = 0; i < legalMoves.size(); i++) {
+		Position nextPos = new Position();
+		String castleTemp = castle;
+		String epTemp = ep;
+		int fiftyTemp = fiftyMoveRule;
 		if (printProgress) {
 		    System.out.println(i + "/" + legalMoves.size() + " complete");
 		}
@@ -1639,6 +1642,9 @@ public class Position {
 		    }
 		    epTemp = "-";
 		    fiftyTemp++;
+		    if (fiftyMoveRule == fiftyTemp) {
+			System.out.println("ERROR");
+		    }
 		} else if (currentMove.substring(1, 2).equals("-")) { // if the current move is en passant
 
 		} else { // if the current move is a non-special move
@@ -1687,18 +1693,24 @@ public class Position {
 
 		double nextEval;
 		if (Math.abs(SE - nextPos.SE()) <= depthThreshold) { // if the evaluation is significantly different,
-		    // think further ahead
-		    nextEval = nextPos.think(depthThreshold, depth - 1, false);
+								     // think further ahead
+		    nextEval = nextPos.think(depthThreshold, depth - 1, play, false);
 		} else {
-		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, false);
+		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, play, false);
 		}
 		if (nextEval == 999) {
 		    bestMove = currentMove;
+		    if (play) {
+			nextFEN = nextPos.FEN();
+		    }
 		    return 999;
 		}
 		if (i == 0 || bestEval < nextEval) {
 		    bestEval = nextEval;
 		    bestMove = currentMove;
+		    if (play) {
+			nextFEN = nextPos.FEN();
+		    }
 		    if (printProgress) {
 			System.out.println("Current Evaluation: " + bestEval);
 			System.out.println("Current Best Move: " + translateMove(bestMove));
@@ -1714,11 +1726,11 @@ public class Position {
 		    return 0;
 		}
 	    }
-	    Position nextPos;
-	    String castleTemp = castle;
-	    String epTemp = ep;
-	    int fiftyTemp = fiftyMoveRule;
 	    for (int i = 0; i < legalMoves.size(); i++) {
+		Position nextPos = new Position();
+		String castleTemp = castle;
+		String epTemp = ep;
+		int fiftyTemp = fiftyMoveRule;
 		if (printProgress) {
 		    System.out.println(i + "/" + legalMoves.size() + " complete");
 		}
@@ -1796,28 +1808,60 @@ public class Position {
 
 		double nextEval;
 		if (Math.abs(SE - nextPos.SE()) <= depthThreshold) { // if the evaluation is significantly different,
-		    // think further ahead
-		    nextEval = nextPos.think(depthThreshold, depth - 1, false);
+								     // think further ahead
+		    nextEval = nextPos.think(depthThreshold, depth - 1, play, false);
 		} else {
-		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, false);
+		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, play, false);
 		}
 		if (nextEval == -999) {
 		    bestMove = currentMove;
+		    if (play) {
+			nextFEN = nextPos.FEN();
+		    }
 		    return -999;
 		}
 		if (i == 0 || bestEval > nextEval) {
 		    bestEval = nextEval;
 		    bestMove = currentMove;
+		    if (play) {
+			nextFEN = nextPos.FEN();
+		    }
 		    if (printProgress) {
 			System.out.println("Current Evaluation: " + bestEval);
 			System.out.println("Current Best Move: " + translateMove(bestMove));
 		    }
 		}
 	    }
+	    return bestEval;
 	}
-	return bestEval;
     }
 
+    String[] Continue(double depthThreshold, int depth, int moveNum) {
+	double currentEval = 1;
+	Position pos = this;
+	pos.setNextFEN(FEN);
+	continuation = new String[moveNum];
+	int i;
+	if (!pos.getWhiteMove()) {
+	    continuation[0] = "     ";
+	    i = 1;
+	} else {
+	    i = 0;
+	}
+	for (i = 0; i < moveNum && Math.abs(currentEval) < 999; i++) {
+	    System.out.println("Depth: " + i + "/" + moveNum);
+	    currentEval = pos.think(depthThreshold, depth, true, false);
+	    System.out.println("Current Evaluation: " + currentEval);
+	    continuation[i] = translateMove(pos.getBestMove());
+	    pos = new Position(pos.getNextFEN());
+	    pos.generateLegalMoves();
+	}
+	System.out.println();
+	return continuation;
+    }
+
+    // translates the computer-understood move format into a human-understood move
+    // format
     String translateMove(String move) {
 	String[] alph = new String[] { "a", "b", "c", "d", "e", "f", "g", "h" };
 	String out;
@@ -1850,6 +1894,17 @@ public class Position {
 	if (!legalMoves.isEmpty()) {
 	    for (int i = 0; i < legalMoves.size(); i++) {
 		System.out.println(legalMoves.get(i));
+	    }
+	}
+    }
+
+    void printContinuation() {
+	System.out.println("Continuation:");
+	for (int i = 0; i < continuation.length && continuation[i] != null; i++) {
+	    if (i % 2 == 0) {
+		System.out.print((moveCount + (i/2)) + ". " + continuation[i] + " ");
+	    } else {
+		System.out.println(continuation[i]);
 	    }
 	}
     }
@@ -1932,5 +1987,13 @@ public class Position {
 
     void setBestEval(double tbestEval) {
 	bestEval = tbestEval;
+    }
+
+    String getNextFEN() {
+	return nextFEN;
+    }
+
+    void setNextFEN(String tnextFEN) {
+	nextFEN = tnextFEN;
     }
 }
