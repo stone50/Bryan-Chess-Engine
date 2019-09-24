@@ -16,8 +16,6 @@ public class Position {
 		     // this variable. Defaults to true
     String bestMove; // what Bryan considers to be the best move
     double bestEval; // position evaluation after analysis
-    String nextFEN; // FEN of the position after making the best move
-    String[] continuation; // list of moves to continue the game
 
     Position() {
 	layout = new char[8][8];
@@ -161,7 +159,7 @@ public class Position {
 
 	// generate pseudo legal moves
 	int i = 1;
-	boolean exit = false;
+	// boolean exit = false;
 	if (whiteMove) {
 	    for (int row = 0; row < 8; row++) {
 		for (int col = 0; col < 8; col++) {
@@ -292,42 +290,46 @@ public class Position {
 		    case 'B':
 			int count = Math.min(row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row - i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col - i));
 			    }
-			    exit = layout[row - i][col - i] != '-';
+			    if (layout[row - i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row - i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col + i));
 			    }
-			    exit = layout[row - i][col + i] != '-';
+			    if (layout[row - i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row + i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col - i));
 			    }
-			    exit = layout[row + i][col - i] != '-';
+			    if (layout[row + i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row + i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col + i));
 			    }
-			    exit = layout[row + i][col + i] != '-';
+			    if (layout[row + i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -335,39 +337,43 @@ public class Position {
 		    // white rook
 		    case 'R':
 			i = 1;
-			exit = false;
-			while (i <= 7 - row && !exit) {
+			while (i <= 7 - row) {
 			    if (!Character.isUpperCase(layout[row + i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col));
 			    }
-			    exit = layout[row + i][col] != '-';
+			    if (layout[row + i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= row && !exit) {
+			while (i <= row) {
 			    if (!Character.isUpperCase(layout[row - i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col));
 			    }
-			    exit = layout[row - i][col] != '-';
+			    if (layout[row - i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= 7 - col && !exit) {
+			while (i <= 7 - col) {
 			    if (!Character.isUpperCase(layout[row][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col + i));
 			    }
-			    exit = layout[row][col + i] != '-';
+			    if (layout[row][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= col && !exit) {
+			while (i <= col) {
 			    if (!Character.isUpperCase(layout[row][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col - i));
 			    }
-			    exit = layout[row][col - i] != '-';
+			    if (layout[row][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -375,79 +381,87 @@ public class Position {
 		    // white queen
 		    case 'Q':
 			i = 1;
-			exit = false;
-			while (i <= 7 - row && !exit) {
+			while (i <= 7 - row) {
 			    if (!Character.isUpperCase(layout[row + i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col));
 			    }
-			    exit = layout[row + i][col] != '-';
+			    if (layout[row + i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= row && !exit) {
+			while (i <= row) {
 			    if (!Character.isUpperCase(layout[row - i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col));
 			    }
-			    exit = layout[row - i][col] != '-';
+			    if (layout[row - i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= 7 - col && !exit) {
+			while (i <= 7 - col) {
 			    if (!Character.isUpperCase(layout[row][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col + i));
 			    }
-			    exit = layout[row][col + i] != '-';
+			    if (layout[row][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= col && !exit) {
+			while (i <= col) {
 			    if (!Character.isUpperCase(layout[row][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col - i));
 			    }
-			    exit = layout[row][col - i] != '-';
+			    if (layout[row][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row - i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col - i));
 			    }
-			    exit = layout[row - i][col - i] != '-';
+			    if (layout[row - i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row - i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col + i));
 			    }
-			    exit = layout[row - i][col + i] != '-';
+			    if (layout[row - i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row + i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col - i));
 			    }
-			    exit = layout[row + i][col - i] != '-';
+			    if (layout[row + i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isUpperCase(layout[row + i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col + i));
 			    }
-			    exit = layout[row + i][col + i] != '-';
+			    if (layout[row + i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -630,42 +644,46 @@ public class Position {
 		    case 'b':
 			int count = Math.min(row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row - i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col - i));
 			    }
-			    exit = layout[row - i][col - i] != '-';
+			    if (layout[row - i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row - i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col + i));
 			    }
-			    exit = layout[row - i][col + i] != '-';
+			    if (layout[row - i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row + i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col - i));
 			    }
-			    exit = layout[row + i][col - i] != '-';
+			    if (layout[row + i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row + i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col + i));
 			    }
-			    exit = layout[row + i][col + i] != '-';
+			    if (layout[row + i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -673,39 +691,43 @@ public class Position {
 		    // black rook
 		    case 'r':
 			i = 1;
-			exit = false;
-			while (i <= 7 - row && !exit) {
+			while (i <= 7 - row) {
 			    if (!Character.isLowerCase(layout[row + i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col));
 			    }
-			    exit = layout[row + i][col] != '-';
+			    if (layout[row + i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= row && !exit) {
+			while (i <= row) {
 			    if (!Character.isLowerCase(layout[row - i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col));
 			    }
-			    exit = layout[row - i][col] != '-';
+			    if (layout[row - i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= 7 - col && !exit) {
+			while (i <= 7 - col) {
 			    if (!Character.isLowerCase(layout[row][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col + i));
 			    }
-			    exit = layout[row][col + i] != '-';
+			    if (layout[row][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= col && !exit) {
+			while (i <= col) {
 			    if (!Character.isLowerCase(layout[row][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col - i));
 			    }
-			    exit = layout[row][col - i] != '-';
+			    if (layout[row][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -713,79 +735,87 @@ public class Position {
 		    // black queen
 		    case 'q':
 			i = 1;
-			exit = false;
-			while (i <= 7 - row && !exit) {
+			while (i <= 7 - row) {
 			    if (!Character.isLowerCase(layout[row + i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col));
 			    }
-			    exit = layout[row + i][col] != '-';
+			    if (layout[row + i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= row && !exit) {
+			while (i <= row) {
 			    if (!Character.isLowerCase(layout[row - i][col])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col));
 			    }
-			    exit = layout[row - i][col] != '-';
+			    if (layout[row - i][col] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= 7 - col && !exit) {
+			while (i <= 7 - col) {
 			    if (!Character.isLowerCase(layout[row][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col + i));
 			    }
-			    exit = layout[row][col + i] != '-';
+			    if (layout[row][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			i = 1;
-			exit = false;
-			while (i <= col && !exit) {
+			while (i <= col) {
 			    if (!Character.isLowerCase(layout[row][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row) + (col - i));
 			    }
-			    exit = layout[row][col - i] != '-';
+			    if (layout[row][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row - i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col - i));
 			    }
-			    exit = layout[row - i][col - i] != '-';
+			    if (layout[row - i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row - i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row - i) + (col + i));
 			    }
-			    exit = layout[row - i][col + i] != '-';
+			    if (layout[row - i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row + i][col - i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col - i));
 			    }
-			    exit = layout[row + i][col - i] != '-';
+			    if (layout[row + i][col - i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			count = Math.min(7 - row, 7 - col);
 			i = 1;
-			exit = false;
-			while (i <= count && !exit) {
+			while (i <= count) {
 			    if (!Character.isLowerCase(layout[row + i][col + i])) {
 				legalMoves.add(row + "" + col + "-" + (row + i) + (col + i));
 			    }
-			    exit = layout[row + i][col + i] != '-';
+			    if (layout[row + i][col + i] != '-') {
+				break;
+			    }
 			    i++;
 			}
 			break;
@@ -833,7 +863,6 @@ public class Position {
 			    }
 			}
 			break;
-
 		    }
 		}
 	    }
@@ -1135,95 +1164,87 @@ public class Position {
 	    // check for bishop/queen (white)
 	    int count = Math.min(row, col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row - i][col - i] != '-') {
-		    exit = true;
 		    if (layout[row - i][col - i] == 'b' || layout[row - i][col - i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(row, 7 - col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row - i][col + i] != '-') {
-		    exit = true;
 		    if (layout[row - i][col + i] == 'b' || layout[row - i][col + i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(7 - row, col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row + i][col - i] != '-') {
-		    exit = true;
 		    if (layout[row + i][col - i] == 'b' || layout[row + i][col - i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(7 - row, 7 - col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row + i][col + i] != '-') {
-		    exit = true;
 		    if (layout[row + i][col + i] == 'b' || layout[row + i][col + i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 
 	    // check for rook/queen (white)
 	    i = 1;
-	    exit = false;
-	    while (i <= 7 - row && !exit) {
+	    while (i <= 7 - row) {
 		if (layout[row + i][col] != '-') {
-		    exit = true;
 		    if (layout[row + i][col] == 'r' || layout[row + i][col] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= row && !exit) {
+	    while (i <= row) {
 		if (layout[row - i][col] != '-') {
-		    exit = true;
 		    if (layout[row - i][col] == 'r' || layout[row - i][col] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= 7 - col && !exit) {
+	    while (i <= 7 - col) {
 		if (layout[row][col + i] != '-') {
-		    exit = true;
 		    if (layout[row][col + i] == 'r' || layout[row][col + i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= col && !exit) {
+	    while (i <= col) {
 		if (layout[row][col - i] != '-') {
-		    exit = true;
 		    if (layout[row][col - i] == 'r' || layout[row][col - i] == 'q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
@@ -1382,95 +1403,87 @@ public class Position {
 	    // check for bishop/queen (black)
 	    int count = Math.min(row, col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row - i][col - i] != '-') {
-		    exit = true;
 		    if (layout[row - i][col - i] == 'B' || layout[row - i][col - i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(row, 7 - col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row - i][col + i] != '-') {
-		    exit = true;
 		    if (layout[row - i][col + i] == 'B' || layout[row - i][col + i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(7 - row, col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row + i][col - i] != '-') {
-		    exit = true;
 		    if (layout[row + i][col - i] == 'B' || layout[row + i][col - i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    count = Math.min(7 - row, 7 - col);
 	    i = 1;
-	    exit = false;
-	    while (i <= count && !exit) {
+	    while (i <= count) {
 		if (layout[row + i][col + i] != '-') {
-		    exit = true;
 		    if (layout[row + i][col + i] == 'B' || layout[row + i][col + i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 
 	    // check for rook/queen (black)
 	    i = 1;
-	    exit = false;
-	    while (i <= 7 - row && !exit) {
+	    while (i <= 7 - row) {
 		if (layout[row + i][col] != '-') {
-		    exit = true;
 		    if (layout[row + i][col] == 'R' || layout[row + i][col] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= row && !exit) {
+	    while (i <= row) {
 		if (layout[row - i][col] != '-') {
-		    exit = true;
 		    if (layout[row - i][col] == 'R' || layout[row - i][col] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= 7 - col && !exit) {
+	    while (i <= 7 - col) {
 		if (layout[row][col + i] != '-') {
-		    exit = true;
 		    if (layout[row][col + i] == 'R' || layout[row][col + i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
 	    i = 1;
-	    exit = false;
-	    while (i <= col && !exit) {
+	    while (i <= col) {
 		if (layout[row][col - i] != '-') {
-		    exit = true;
 		    if (layout[row][col - i] == 'R' || layout[row][col - i] == 'Q') {
 			return true;
 		    }
+		    break;
 		}
 		i++;
 	    }
@@ -1526,60 +1539,60 @@ public class Position {
     double SE() {
 	double out = 0;
 
-	if (whiteMove) {
-	    out += legalMoves.size() / 100.0;
-	    Position pos = new Position();
-	    pos.setLayout(layout);
-	    pos.setWhiteMove(false);
-	    pos.generateLegalMoves();
-	    out -= pos.getLegalMoves().size() / 100.0;
-	    if (pos.inCheck()) {
-		out -= 0.3;
-	    }
-	} else {
-	    out -= legalMoves.size() / 100.0;
-	    Position pos = new Position();
-	    pos.setLayout(layout);
-	    pos.setWhiteMove(true);
-	    pos.generateLegalMoves();
-	    out += pos.getLegalMoves().size() / 100.0;
-	    if (pos.inCheck()) {
-		out += 0.3;
-	    }
-	}
+//	if (whiteMove) {
+//	    out += legalMoves.size() / 100.0;
+//	    Position pos = new Position();
+//	    pos.setLayout(layout);
+//	    pos.setWhiteMove(false);
+//	    pos.generateLegalMoves();
+//	    out -= pos.getLegalMoves().size() / 100.0;
+//	    if (pos.inCheck()) {
+//		out -= 0.3;
+//	    }
+//	} else {
+//	    out -= legalMoves.size() / 100.0;
+//	    Position pos = new Position();
+//	    pos.setLayout(layout);
+//	    pos.setWhiteMove(true);
+//	    pos.generateLegalMoves();
+//	    out += pos.getLegalMoves().size() / 100.0;
+//	    if (pos.inCheck()) {
+//		out += 0.3;
+//	    }
+//	}
 
 	for (int row = 0; row < 8; row++) {
 	    for (int col = 0; col < 8; col++) {
 		switch (layout[row][col]) {
 		case 'P':
-		    out += 1;
+		    out += 1 + ((8 - row) / 100.0);
 		    break;
 		case 'p':
-		    out -= 1;
+		    out -= 1 + ((row + 1) / 100.0);
 		    break;
 		case 'R':
-		    out += 5;
+		    out += 5 + ((8 - row) / 100.0);
 		    break;
 		case 'r':
-		    out -= 5;
+		    out -= 5 + ((row + 1) / 100.0);
 		    break;
 		case 'N':
-		    out += 3;
+		    out += 3 + ((8 - row) / 100.0);
 		    break;
 		case 'n':
-		    out -= 3;
+		    out -= 3 + ((row + 1) / 100.0);
 		    break;
 		case 'B':
-		    out += 3.1;
+		    out += 3.1 + ((8 - row) / 100.0);
 		    break;
 		case 'b':
-		    out -= 3.1;
+		    out -= 3.1 + ((row + 1) / 100.0);
 		    break;
 		case 'Q':
-		    out += 9;
+		    out += 9 + ((8 - row) / 100.0);
 		    break;
 		case 'q':
-		    out -= 9;
+		    out -= 9 + ((row + 1) / 100.0);
 		    break;
 		}
 	    }
@@ -1589,22 +1602,26 @@ public class Position {
 	return out;
     }
 
-    double think(double depthThreshold, int depth, boolean play, boolean printProgress) {
+    double think(double depthThreshold, int depth, boolean printProgress) {
 	if (SE == 0) {
 	    SE();
 	}
-	if (depth == 0) {
+	if (depth < 1) {
+	    bestEval = SE;
 	    return SE;
 	}
 	if (fiftyMoveRule == 50) {
+	    bestEval = 0;
 	    return 0;
 	}
 	char[][] test = new char[8][8];
 	if (whiteMove) {
 	    if (legalMoves.isEmpty()) {
 		if (inCheck()) {
+		    bestEval = -999;
 		    return -999;
 		} else {
+		    bestEval = 0;
 		    return 0;
 		}
 	    }
@@ -1692,25 +1709,20 @@ public class Position {
 		nextPos.generateLegalMoves();
 
 		double nextEval;
-		if (Math.abs(SE - nextPos.SE()) <= depthThreshold) { // if the evaluation is significantly different,
-								     // think further ahead
-		    nextEval = nextPos.think(depthThreshold, depth - 1, play, false);
+		double diff = Math.abs(SE - nextPos.SE());
+		if (diff > depthThreshold) {
+		    nextEval = nextPos.think(diff, depth, false);
 		} else {
-		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, play, false);
+		    nextEval = nextPos.think(Bryan.depthThreshold, depth - 1, false);
 		}
 		if (nextEval == 999) {
 		    bestMove = currentMove;
-		    if (play) {
-			nextFEN = nextPos.FEN();
-		    }
+		    bestEval = 999;
 		    return 999;
 		}
 		if (i == 0 || bestEval < nextEval) {
 		    bestEval = nextEval;
 		    bestMove = currentMove;
-		    if (play) {
-			nextFEN = nextPos.FEN();
-		    }
 		    if (printProgress) {
 			System.out.println("Current Evaluation: " + bestEval);
 			System.out.println("Current Best Move: " + translateMove(bestMove));
@@ -1721,8 +1733,10 @@ public class Position {
 	} else {
 	    if (legalMoves.isEmpty()) {
 		if (inCheck()) {
+		    bestEval = 999;
 		    return 999;
 		} else {
+		    bestEval = 0;
 		    return 0;
 		}
 	    }
@@ -1807,25 +1821,20 @@ public class Position {
 		nextPos.generateLegalMoves();
 
 		double nextEval;
-		if (Math.abs(SE - nextPos.SE()) <= depthThreshold) { // if the evaluation is significantly different,
-								     // think further ahead
-		    nextEval = nextPos.think(depthThreshold, depth - 1, play, false);
+		double diff = Math.abs(SE - nextPos.SE());
+		if (diff > depthThreshold) {
+		    nextEval = nextPos.think(diff, depth, false);
 		} else {
-		    nextEval = nextPos.think(Math.abs(SE - nextPos.getSE()), depth, play, false);
+		    nextEval = nextPos.think(Bryan.depthThreshold, depth - 1, false);
 		}
 		if (nextEval == -999) {
 		    bestMove = currentMove;
-		    if (play) {
-			nextFEN = nextPos.FEN();
-		    }
+		    bestEval = -999;
 		    return -999;
 		}
 		if (i == 0 || bestEval > nextEval) {
 		    bestEval = nextEval;
 		    bestMove = currentMove;
-		    if (play) {
-			nextFEN = nextPos.FEN();
-		    }
 		    if (printProgress) {
 			System.out.println("Current Evaluation: " + bestEval);
 			System.out.println("Current Best Move: " + translateMove(bestMove));
@@ -1834,30 +1843,6 @@ public class Position {
 	    }
 	    return bestEval;
 	}
-    }
-
-    String[] Continue(double depthThreshold, int depth, int moveNum) {
-	double currentEval = 1;
-	Position pos = this;
-	pos.setNextFEN(FEN);
-	continuation = new String[moveNum];
-	int i;
-	if (!pos.getWhiteMove()) {
-	    continuation[0] = "     ";
-	    i = 1;
-	} else {
-	    i = 0;
-	}
-	for (i = 0; i < moveNum && Math.abs(currentEval) < 999; i++) {
-	    System.out.println("Depth: " + i + "/" + moveNum);
-	    currentEval = pos.think(depthThreshold, depth, true, false);
-	    System.out.println("Current Evaluation: " + currentEval);
-	    continuation[i] = translateMove(pos.getBestMove());
-	    pos = new Position(pos.getNextFEN());
-	    pos.generateLegalMoves();
-	}
-	System.out.println();
-	return continuation;
     }
 
     // translates the computer-understood move format into a human-understood move
@@ -1894,17 +1879,6 @@ public class Position {
 	if (!legalMoves.isEmpty()) {
 	    for (int i = 0; i < legalMoves.size(); i++) {
 		System.out.println(legalMoves.get(i));
-	    }
-	}
-    }
-
-    void printContinuation() {
-	System.out.println("Continuation:");
-	for (int i = 0; i < continuation.length && continuation[i] != null; i++) {
-	    if (i % 2 == 0) {
-		System.out.print((moveCount + (i/2)) + ". " + continuation[i] + " ");
-	    } else {
-		System.out.println(continuation[i]);
 	    }
 	}
     }
@@ -1989,11 +1963,4 @@ public class Position {
 	bestEval = tbestEval;
     }
 
-    String getNextFEN() {
-	return nextFEN;
-    }
-
-    void setNextFEN(String tnextFEN) {
-	nextFEN = tnextFEN;
-    }
 }
